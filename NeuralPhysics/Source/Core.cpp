@@ -285,12 +285,12 @@ int main()
 
         Window.display();
         
-        std::string str = "Neural Physics";
+        std::string str = "Neural Physics by swr06";
 		if (DoSim) {
-			str += " - Running";
+			str += "   |  Running";
 		}
 		else {
-			str += " - Paused";
+			str += "   |  Paused";
 		}
 
         Window.setTitle(str.c_str());
