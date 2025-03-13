@@ -39,7 +39,7 @@ Body Cart;
 void StepPhysics(float dt) {
     vec2 AspectScale = vec2(1.0f, 1.0f / Aspect);
 
-	vec2 Gravity = vec2(0.0f, -9.8f * 0.3) ;
+	vec2 Gravity = vec2(0.0f, -9.8f * 0.4) ;
 
     // Update bob 
     {
@@ -113,6 +113,13 @@ int main()
     FpsText.setFillColor(sf::Color::White);
     FpsText.setPosition(10.f, 10.f);
 
+
+    sf::Text Info;
+    Info.setFont(Font);
+    Info.setCharacterSize(18);
+    Info.setFillColor(sf::Color::White);
+    Info.setPosition(10.f, 30.f);
+
     sf::Text TopText;
     TopText.setFont(Font);
     TopText.setString("NEAT");
@@ -184,6 +191,7 @@ int main()
             FrameCount = 0;
         }
 
+
         sf::Event Event;
         while (Window.pollEvent(Event))
         {
@@ -236,13 +244,30 @@ int main()
         );
 
         float DeltaX = PlayerCenter.x - CircleCenter.x;
-        float DeltaY = PlayerCenter.y - CircleCenter.y;
+        float DeltaY = PlayerCenter.y - CircleCenter.y; 
         float Distance = std::sqrt(DeltaX * DeltaX + DeltaY * DeltaY);
         float Angle = std::atan2(DeltaY, DeltaX);
         ConnectingRect.setSize(sf::Vector2f(Distance, 5.f));
         ConnectingRect.setPosition(CircleCenter);
         ConnectingRect.setRotation(Angle * 180.f / 3.1415927f); 
         ConnectingRect.setOrigin(0, 2.5f);
+
+        std::string temp = "Bob Angle : ";
+        temp += std::to_string(Angle * 180.f / 3.1415927f); 
+		temp += "\n\nCart Velocity : ";
+		temp += std::to_string(Cart.Velocity.x) + "  ";
+		temp += std::to_string(Cart.Velocity.y);
+        temp += "\nCart Position : ";
+        temp += std::to_string(Cart.Position.x) + "  ";
+        temp += std::to_string(Cart.Position.y);
+		temp += "\n\nBob Velocity : ";
+		temp += std::to_string(Bob.Velocity.x) + "  ";
+        temp += std::to_string(Bob.Velocity.y);
+        temp += "\nBob Position : ";
+        temp += std::to_string(Bob.Position.x) + "  ";
+        temp += std::to_string(Bob.Position.y);
+
+        Info.setString(temp.c_str());
 
         Window.clear(sf::Color::Black);
 
@@ -252,10 +277,11 @@ int main()
         Window.draw(Line);
 
         Window.draw(Circle);
-        Window.draw(ConnectingRect);
         Window.draw(PlayerRect);
+        Window.draw(ConnectingRect);
 
         Window.draw(FpsText);
+        Window.draw(Info);
         Window.draw(TopText);
 
         Window.display();
