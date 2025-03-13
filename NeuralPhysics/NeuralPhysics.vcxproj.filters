@@ -13,10 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\Neural">
+      <UniqueIdentifier>{7d59c148-5986-4b42-b340-5a597bf7e63a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="NeuralPhysics.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Source\NEAT.cpp">
+      <Filter>Source Files\Neural</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core.cpp">
+      <Filter>Source Files\Neural</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\NEAT.h">
+      <Filter>Source Files\Neural</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\vec2.h">
+      <Filter>Source Files\Neural</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

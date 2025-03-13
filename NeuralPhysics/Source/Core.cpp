@@ -5,17 +5,16 @@
 #include <iostream>
 #include <string>
 #include <windows.h>
+#include "vec2.h"
 
 int WIDTH = 1280;
 int HEIGHT = 720;
-float Aspect = float(WIDTH) / float(HEIGHT);
+double Aspect = double(WIDTH) / double(HEIGHT);
 
-const float L0 = 0.25f; // Constraining length
+const double L0 = 0.25f; // Constraining length
 bool DoSim = false;
 
-using vec3 = sf::Vector3f;
-using vec2 = sf::Vector2f;
-
+using vec2 = hpvec2;
 
 struct Body {
     vec2 Position;
@@ -23,20 +22,20 @@ struct Body {
     vec2 Velocity;
     vec2 Acceleration;
     vec2 Dimensions; // <- only use for rectangles 
-	float Radius; // <- only use for circles
-    float Mass = 1.;
+	double Radius; // <- only use for circles
+    double Mass = 1.;
 };
 
 
 vec2 Normalize(const vec2& x) {
-	float Length = std::sqrt(x.x * x.x + x.y * x.y);
+	double Length = std::sqrt(x.x * x.x + x.y * x.y);
 	return vec2(x.x / Length, x.y / Length);    
 }
 
 Body Bob;
 Body Cart;
 
-void StepPhysics(float dt) {
+void StepPhysics(double dt) {
     vec2 AspectScale = vec2(1.0f, 1.0f / Aspect);
 
 	vec2 Gravity = vec2(0.0f, -9.8f * 0.4) ;
@@ -55,8 +54,8 @@ void StepPhysics(float dt) {
 		vec2 Delta = Bob.Position - Cart.Position;
 		Delta.x *= AspectScale.x;
 		Delta.y *= AspectScale.y;
-		float Distance = std::sqrt(Delta.x * Delta.x + Delta.y * Delta.y);
-        float DeltaX = Distance - L0;
+		double Distance = std::sqrt(Delta.x * Delta.x + Delta.y * Delta.y);
+        double DeltaX = Distance - L0;
 		Bob.Position.x -= Normalize(Delta).x * DeltaX;
 		Bob.Position.y -= Normalize(Delta).y * DeltaX;
         Bob.Velocity = (Bob.Position - Bob.PrevPosition) / dt;
@@ -140,14 +139,14 @@ int main()
     sf::RectangleShape ConnectingRect;
     ConnectingRect.setFillColor(sf::Color::Red);
 
-    const float MoveSpeed = 300.0f;
+    const double MoveSpeed = 300.0f;
 
     sf::Clock Clock;
 
     sf::Clock FpsClock;
-    float FpsUpdateTime = 0.0f;
+    double FpsUpdateTime = 0.0f;
     unsigned int FrameCount = 0;
-    float CurrentFps = 0.0f;
+    double CurrentFps = 0.0f;
 
     sf::RectangleShape Line(sf::Vector2f(WIDTH, 1));
 
@@ -159,20 +158,20 @@ int main()
 		//SetSFMLWindowSize(Window, handle);
 		WIDTH = Window.getSize().x;
 		HEIGHT = Window.getSize().y;
-		Aspect = float(WIDTH) / float(HEIGHT);
-        Cart.Dimensions = vec2(50. / float(WIDTH), 30. / float(HEIGHT));
+		Aspect = double(WIDTH) / double(HEIGHT);
+        Cart.Dimensions = vec2(50. / double(WIDTH), 30. / double(HEIGHT));
 
-		float WidthAR = float(WIDTH);
-		float HeightAR = float(HEIGHT);
+		double WidthAR = double(WIDTH);
+		double HeightAR = double(HEIGHT);
 
 
         Circle.setPosition(
-            float(WidthAR) * Bob.Position.x,
-            float(HeightAR) * (1.-Bob.Position.y)
+            double(WidthAR) * Bob.Position.x,
+            double(HeightAR) * (1.-Bob.Position.y)
         );
 
         sf::Time DeltaTime = Clock.restart();
-        float Dt = DeltaTime.asSeconds();
+        double Dt = DeltaTime.asSeconds();
 
         if (DoSim) {
             StepPhysics(Dt);
@@ -205,7 +204,7 @@ int main()
             }
         }
 
-        float SpeedCard = 900.f ;
+        double SpeedCard = 900.f ;
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
 			SpeedCard *= 6.f;
@@ -227,8 +226,8 @@ int main()
             Cart.Position.x = 1. - (Cart.Dimensions.x / 2.0f);
         }
 
-        PlayerRect.setPosition(Cart.Position.x * float(WidthAR) - (Cart.Dimensions.x / 2.) * float(WidthAR), 
-            (1.0f - Cart.Position.y) * float(HeightAR) - (Cart.Dimensions.y / 2.) * float(HeightAR));
+        PlayerRect.setPosition(Cart.Position.x * double(WidthAR) - (Cart.Dimensions.x / 2.) * double(WidthAR), 
+            (1.0f - Cart.Position.y) * double(HeightAR) - (Cart.Dimensions.y / 2.) * double(HeightAR));
 
         sf::Vector2f Position = PlayerRect.getPosition();
         sf::Vector2f Size = PlayerRect.getSize();
@@ -243,10 +242,10 @@ int main()
             PlayerRect.getPosition().y + PlayerRect.getSize().y / 2.0f
         );
 
-        float DeltaX = PlayerCenter.x - CircleCenter.x;
-        float DeltaY = PlayerCenter.y - CircleCenter.y; 
-        float Distance = std::sqrt(DeltaX * DeltaX + DeltaY * DeltaY);
-        float Angle = std::atan2(DeltaY, DeltaX);
+        double DeltaX = PlayerCenter.x - CircleCenter.x;
+        double DeltaY = PlayerCenter.y - CircleCenter.y; 
+        double Distance = std::sqrt(DeltaX * DeltaX + DeltaY * DeltaY);
+        double Angle = std::atan2(DeltaY, DeltaX);
         ConnectingRect.setSize(sf::Vector2f(Distance, 5.f));
         ConnectingRect.setPosition(CircleCenter);
         ConnectingRect.setRotation(Angle * 180.f / 3.1415927f); 
