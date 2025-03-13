@@ -96,7 +96,7 @@ int main()
     Settings.antialiasingLevel = 16; 
     
     sf::RenderWindow Window(sf::VideoMode(WIDTH, HEIGHT), "Neural Evolution", sf::Style::Titlebar | sf::Style::Close, Settings);
-    Window.setFramerateLimit(1000);
+    Window.setFramerateLimit(350);
    // HWND handle = Window.getSystemHandle();
    // ShowWindow(handle, SW_MAXIMIZE);
 
