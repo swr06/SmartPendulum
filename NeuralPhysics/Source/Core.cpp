@@ -24,6 +24,8 @@ struct Body {
     vec2 Dimensions; // <- only use for rectangles 
 	double Radius; // <- only use for circles
     double Mass = 1.;
+    double Angle;
+	double AngularVelocity;
 };
 
 
@@ -46,6 +48,7 @@ void StepPhysics(double dt) {
         vec2 PseudoForce = -Bob.Mass * Cart.Acceleration;
         Bob.Acceleration += PseudoForce / Bob.Mass;
 
+        double PrevAngle = Bob.Angle;
         Bob.Velocity += Bob.Acceleration * dt;
         Bob.PrevPosition = Bob.Position;
         Bob.Position += Bob.Velocity * dt;
@@ -59,8 +62,16 @@ void StepPhysics(double dt) {
 		Bob.Position.x -= Normalize(Delta).x * DeltaX;
 		Bob.Position.y -= Normalize(Delta).y * DeltaX;
         Bob.Velocity = (Bob.Position - Bob.PrevPosition) / dt;
-        Bob.Velocity *= 0.998f;
+        Bob.Velocity *= 0.99f;
         Bob.Acceleration = vec2(0.,0.);
+
+
+        vec2 NewDelta = Bob.Position - Cart.Position;
+        NewDelta.x *= AspectScale.x;
+        NewDelta.y *= AspectScale.y;
+        Bob.Angle = std::atan2(NewDelta.x, NewDelta.y); 
+
+        Bob.AngularVelocity = (Bob.Angle - PrevAngle) / dt;
 
     }
 
@@ -71,7 +82,7 @@ void StepPhysics(double dt) {
         Cart.PrevPosition = Cart.Position;
         Cart.Position += Cart.Velocity * dt ;
         Cart.Velocity = (Cart.Position - Cart.PrevPosition) / dt;
-        Cart.Velocity *= 0.998f;
+        Cart.Velocity *= 0.99f;
 		Cart.Acceleration = vec2(0.0f, 0.0f);
     }
 }
@@ -96,7 +107,7 @@ int main()
     Settings.antialiasingLevel = 16; 
     
     sf::RenderWindow Window(sf::VideoMode(WIDTH, HEIGHT), "Neural Evolution", sf::Style::Titlebar | sf::Style::Close, Settings);
-    Window.setFramerateLimit(1000);
+    Window.setFramerateLimit(120);
    // HWND handle = Window.getSystemHandle();
    // ShowWindow(handle, SW_MAXIMIZE);
 
@@ -204,7 +215,7 @@ int main()
             }
         }
 
-        double SpeedCard = 900.f ;
+        double SpeedCard = 500.f ;
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
 			SpeedCard *= 6.f;
@@ -224,6 +235,7 @@ int main()
         }
         if (Cart.Position.x + Cart.Dimensions.x / 2.0f > 1) {
             Cart.Position.x = 1. - (Cart.Dimensions.x / 2.0f);
+            Cart.Velocity = vec2(0.0f, 0.0f);
         }
 
         PlayerRect.setPosition(Cart.Position.x * double(WidthAR) - (Cart.Dimensions.x / 2.) * double(WidthAR), 
@@ -265,6 +277,10 @@ int main()
         temp += "\nBob Position : ";
         temp += std::to_string(Bob.Position.x) + "  ";
         temp += std::to_string(Bob.Position.y);
+        temp += "\nBob Angular Velocity : ";
+		temp += std::to_string(Bob.AngularVelocity);
+        temp += "\nBob Angular Position : ";
+		temp += std::to_string(Bob.Angle * 180.f / 3.1415927f);
 
         Info.setString(temp.c_str());
 
